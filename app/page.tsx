@@ -99,7 +99,7 @@ export default function Home() {
             </CardTitle>
 
             <ImageUploader preview={preview} onFileSelect={handleFileSelect} />
-            <ModeSelector mode={ocrMode} onChange={setOcrMode} />
+            {/* <ModeSelector mode={ocrMode} onChange={setOcrMode} /> */}
 
             <div className="mt-4 flex gap-2">
               <Button 
