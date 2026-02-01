@@ -1,65 +1,159 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Upload, FileText, Search, Trash2, AlertCircle, Copy, Check } from "lucide-react";
+import { OcrMode, DisplayFormat } from "@/types";
+import { extractText } from "@/services/ocr";
+import { formatTextForCopy } from "@/lib/utils";
+import {
+  Button,
+  Card,
+  CardTitle,
+  ImageUploader,
+  ModeSelector,
+  DisplayFormatSelector,
+  OutputDisplay,
+  OutputContainer,
+  StatsPanel,
+  TipsSection,
+  TechStack,
+  Header,
+  Footer,
+} from "@/components";
 
 export default function Home() {
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+  const [result, setResult] = useState("");
+  const [lines, setLines] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [ocrMode, setOcrMode] = useState<OcrMode>("auto");
+  const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("numbered");
+  const [confidence, setConfidence] = useState(0);
+  const [modeUsed, setModeUsed] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const handleFileSelect = (selectedFile: File) => {
+    setFile(selectedFile);
+    setPreview(URL.createObjectURL(selectedFile));
+    setResult("");
+    setError("");
+  };
+
+  const handleSubmit = async () => {
+    if (!file) {
+      setError("Please select an image file");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setResult("");
+    setLines([]);
+
+    try {
+      const data = await extractText(file, ocrMode);
+      if (data.success) {
+        setResult(data.text);
+        setLines(data.lines || []);
+        setConfidence(data.confidence);
+        setModeUsed(data.mode_used);
+      } else {
+        setError("OCR processing failed");
+      }
+    } catch (err) {
+      setError(`Error: ${err instanceof Error ? err.message : "Failed to connect to OCR server."}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(formatTextForCopy(result, lines, displayFormat));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleClear = () => {
+    setFile(null);
+    setPreview("");
+    setResult("");
+    setLines([]);
+    setError("");
+    setConfidence(0);
+    setModeUsed("");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <Header />
+
+        <div className="grid gap-6 lg:grid-cols-5">
+          {/* Upload Section */}
+          <Card className="lg:col-span-2">
+            <CardTitle>
+              <Upload className="w-5 h-5 text-emerald-500" />
+              Upload Image
+            </CardTitle>
+
+            <ImageUploader preview={preview} onFileSelect={handleFileSelect} />
+            <ModeSelector mode={ocrMode} onChange={setOcrMode} />
+
+            <div className="mt-4 flex gap-2">
+              <Button 
+                onClick={handleSubmit} 
+                disabled={!file} 
+                loading={loading}
+                className="flex-1"
+              >
+                {loading ? "Processing..." : <><Search className="w-4 h-4" /> Extract Text</>}
+              </Button>
+              {file && (
+                <Button variant="secondary" onClick={handleClear}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+
+            {error && (
+              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <StatsPanel confidence={confidence} modeUsed={modeUsed} lines={lines} result={result} />
+          </Card>
+
+          {/* Result Section */}
+          <Card className="lg:col-span-3 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <CardTitle>
+                <FileText className="w-5 h-5 text-emerald-500" />
+                Extracted Text
+              </CardTitle>
+              {result && (
+                <Button variant="secondary" size="sm" onClick={handleCopy}>
+                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copied ? "Copied!" : "Copy"}
+                </Button>
+              )}
+            </div>
+
+            <DisplayFormatSelector format={displayFormat} onChange={setDisplayFormat} />
+
+            <OutputContainer result={result}>
+              <OutputDisplay result={result} lines={lines} format={displayFormat} />
+            </OutputContainer>
+          </Card>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <TipsSection />
+        <TechStack />
+        <Footer />
+      </div>
     </div>
   );
 }
