@@ -1,4 +1,4 @@
-export type OcrMode = "auto" | "printed" | "handwritten";
+export type OcrMode = "printed" | "handwritten";
 export type DisplayFormat = "numbered" | "lines" | "plain";
 
 export interface WordBox {

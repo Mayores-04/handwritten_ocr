@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCw, Type, PenTool } from "lucide-react";
+import { LucideIcon, Type, PenTool } from "lucide-react";
 import { OcrMode } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -9,8 +9,7 @@ interface ModeSelectorProps {
   onChange: (mode: OcrMode) => void;
 }
 
-const modes: { value: OcrMode; label: string; icon: typeof RefreshCw }[] = [
-  { value: "auto", label: "Auto", icon: RefreshCw },
+const modes: { value: OcrMode; label: string; icon: LucideIcon }[] = [
   { value: "printed", label: "Printed", icon: Type },
   { value: "handwritten", label: "Handwritten", icon: PenTool },
 ];

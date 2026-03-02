@@ -8,9 +8,11 @@ interface OutputDisplayProps {
   result: string;
   lines: string[];
   format: DisplayFormat;
+  onResultChange: (value: string) => void;
+  onLinesChange: (value: string[]) => void;
 }
 
-export function OutputDisplay({ result, lines, format }: OutputDisplayProps) {
+export function OutputDisplay({ result, lines, format, onResultChange, onLinesChange }: OutputDisplayProps) {
   if (!result) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-500">
@@ -20,27 +22,44 @@ export function OutputDisplay({ result, lines, format }: OutputDisplayProps) {
     );
   }
 
-  if (format === "numbered" && lines.length > 0) {
+  const editableLines = lines.length > 0 ? lines : result.split(/\r?\n/);
+
+  const updateLine = (index: number, value: string) => {
+    const updated = [...editableLines];
+    updated[index] = value;
+    onLinesChange(updated);
+    onResultChange(updated.join("\n"));
+  };
+
+  if (format === "numbered" && editableLines.length > 0) {
     return (
       <div className="space-y-1">
-        {lines.map((line, index) => (
+        {editableLines.map((line, index) => (
           <div key={index} className="flex gap-3 hover:bg-slate-800/50 rounded px-2 py-1 transition-colors">
             <span className="text-emerald-500 font-medium w-8 flex-shrink-0 select-none text-right">
               {index + 1}.
             </span>
-            <span className="flex-1 text-slate-100">{line}</span>
+            <input
+              value={line}
+              onChange={(e) => updateLine(index, e.target.value)}
+              className="flex-1 bg-transparent text-slate-100 outline-none border-b border-transparent focus:border-emerald-500/50"
+            />
           </div>
         ))}
       </div>
     );
   }
 
-  if (format === "lines" && lines.length > 0) {
+  if (format === "lines" && editableLines.length > 0) {
     return (
       <div className="space-y-2">
-        {lines.map((line, index) => (
+        {editableLines.map((line, index) => (
           <div key={index} className="border-l-2 border-slate-600 pl-3 py-1 hover:border-emerald-500 transition-colors">
-            <span className="text-slate-100">{line}</span>
+            <input
+              value={line}
+              onChange={(e) => updateLine(index, e.target.value)}
+              className="w-full bg-transparent text-slate-100 outline-none"
+            />
           </div>
         ))}
       </div>
@@ -48,9 +67,11 @@ export function OutputDisplay({ result, lines, format }: OutputDisplayProps) {
   }
 
   return (
-    <div className="whitespace-pre-wrap text-slate-100 leading-relaxed">
-      {result}
-    </div>
+    <textarea
+      value={result}
+      onChange={(e) => onResultChange(e.target.value)}
+      className="w-full min-h-[340px] bg-transparent text-slate-100 leading-relaxed outline-none resize-y"
+    />
   );
 }
 

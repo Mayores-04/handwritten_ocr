@@ -1,10 +1,10 @@
-import { Brain, Type, PenTool, Layers, Cpu } from "lucide-react";
+import { Brain, ScanText, SlidersHorizontal, Rows3, Server } from "lucide-react";
 
 const techs = [
-  { icon: Type, name: "keras-ocr", desc: "CRAFT + CRNN", color: "text-blue-400" },
-  { icon: PenTool, name: "Custom CRNN", desc: "CNN + BiLSTM", color: "text-purple-400" },
-  { icon: Layers, name: "CTC Decoder", desc: "Sequence to Text", color: "text-emerald-400" },
-  { icon: Cpu, name: "TensorFlow", desc: "Keras Backend", color: "text-orange-400" },
+  { icon: ScanText, name: "EasyOCR", desc: "Printed + Handwritten", color: "text-blue-400" },
+  { icon: SlidersHorizontal, name: "OpenCV", desc: "Image Preprocessing", color: "text-purple-400" },
+  { icon: Rows3, name: "Line Parser", desc: "Layout to Text Lines", color: "text-emerald-400" },
+  { icon: Server, name: "Flask API", desc: "OCR Service Backend", color: "text-orange-400" },
 ];
 
 export function TechStack() {
@@ -12,7 +12,7 @@ export function TechStack() {
     <div className="mt-6 bg-slate-800/30 rounded-2xl p-5 border border-slate-700/50">
       <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
         <Brain className="w-5 h-5 text-emerald-500" />
-        Powered by Keras Deep Learning
+        Powered by OCR Pipeline
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {techs.map(({ icon: Icon, name, desc, color }) => (

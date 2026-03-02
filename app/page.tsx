@@ -28,7 +28,7 @@ export default function Home() {
   const [lines, setLines] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [ocrMode, setOcrMode] = useState<OcrMode>("auto");
+  const [ocrMode, setOcrMode] = useState<OcrMode>("printed");
   const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("numbered");
   const [confidence, setConfidence] = useState(0);
   const [modeUsed, setModeUsed] = useState("");
@@ -85,6 +85,16 @@ export default function Home() {
     setModeUsed("");
   };
 
+  const handleResultChange = (value: string) => {
+    setResult(value);
+    setLines(value ? value.split(/\r?\n/) : []);
+  };
+
+  const handleLinesChange = (value: string[]) => {
+    setLines(value);
+    setResult(value.join("\n"));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -99,7 +109,7 @@ export default function Home() {
             </CardTitle>
 
             <ImageUploader preview={preview} onFileSelect={handleFileSelect} />
-            {/* <ModeSelector mode={ocrMode} onChange={setOcrMode} /> */}
+            <ModeSelector mode={ocrMode} onChange={setOcrMode} />
 
             <div className="mt-4 flex gap-2">
               <Button 
@@ -145,7 +155,13 @@ export default function Home() {
             <DisplayFormatSelector format={displayFormat} onChange={setDisplayFormat} />
 
             <OutputContainer result={result}>
-              <OutputDisplay result={result} lines={lines} format={displayFormat} />
+              <OutputDisplay
+                result={result}
+                lines={lines}
+                format={displayFormat}
+                onResultChange={handleResultChange}
+                onLinesChange={handleLinesChange}
+              />
             </OutputContainer>
           </Card>
         </div>
