@@ -1,10 +1,42 @@
-import { Brain, ScanText, SlidersHorizontal, Rows3, Server } from "lucide-react";
+import {
+  Brain,
+  ScanText,
+  SlidersHorizontal,
+  Sparkles,
+  Server,
+} from "lucide-react";
 
 const techs = [
-  { icon: ScanText, name: "EasyOCR", desc: "Printed + Handwritten", color: "text-blue-400" },
-  { icon: SlidersHorizontal, name: "OpenCV", desc: "Image Preprocessing", color: "text-purple-400" },
-  { icon: Rows3, name: "Line Parser", desc: "Layout to Text Lines", color: "text-emerald-400" },
-  { icon: Server, name: "Flask API", desc: "OCR Service Backend", color: "text-orange-400" },
+  {
+    icon: Brain,
+    name: "Keras/TensorFlow",
+    desc: "Deep Learning Models",
+    color: "text-red-400",
+  },
+  {
+    icon: ScanText,
+    name: "EasyOCR",
+    desc: "Text Recognition",
+    color: "text-blue-400",
+  },
+  {
+    icon: SlidersHorizontal,
+    name: "OpenCV",
+    desc: "Image Preprocessing",
+    color: "text-purple-400",
+  },
+  {
+    icon: Sparkles,
+    name: "Text Correction",
+    desc: "Error Fixes & Validation",
+    color: "text-emerald-400",
+  },
+  {
+    icon: Server,
+    name: "Flask API",
+    desc: "Backend Service",
+    color: "text-orange-400",
+  },
 ];
 
 export function TechStack() {

@@ -19,7 +19,7 @@ export function Footer() {
   return (
     <div className="mt-8 text-center text-slate-500 text-sm flex items-center justify-center gap-2">
       <Brain className="w-4 h-4" />
-      Powered by EasyOCR + OpenCV + Flask
+      Powered by EasyOCR + Keras + OpenCV + Flask + Text Correction
     </div>
   );
 }

@@ -9,22 +9,39 @@ interface StatsPanelProps {
   result: string;
 }
 
-export function StatsPanel({ confidence, modeUsed, lines, result }: StatsPanelProps) {
+export function StatsPanel({
+  confidence,
+  modeUsed,
+  lines,
+  result,
+}: StatsPanelProps) {
   if (!result) return null;
 
   const stats = [
-    { 
-      label: "Confidence", 
+    {
+      label: "Confidence",
       value: `${(confidence * 100).toFixed(1)}%`,
       className: cn(
         "font-medium",
-        confidence > 0.7 ? 'text-emerald-400' : confidence > 0.4 ? 'text-yellow-400' : 'text-red-400'
-      )
+        confidence > 0.7
+          ? "text-emerald-400"
+          : confidence > 0.4
+            ? "text-yellow-400"
+            : "text-red-400",
+      ),
     },
-    { label: "Model", value: getModeLabel(modeUsed), className: "text-blue-400 text-xs" },
+    {
+      label: "Model",
+      value: getModeLabel(modeUsed),
+      className: "text-blue-400 text-xs",
+    },
     { label: "Lines", value: lines.length || 1, className: "text-slate-300" },
     { label: "Characters", value: result.length, className: "text-slate-300" },
-    { label: "Words", value: result.split(/\s+/).filter(Boolean).length, className: "text-slate-300" },
+    {
+      label: "Words",
+      value: result.split(/\s+/).filter(Boolean).length,
+      className: "text-slate-300",
+    },
   ];
 
   return (

@@ -7,7 +7,9 @@ export const MODE_LABELS: Record<string, string> = {
   keras_char_model: "Keras CNN (Character)",
   easyocr: "EasyOCR (Printed)",
   easyocr_handwriting: "EasyOCR (Handwritten)",
+  handwriting_easyocr: "EasyOCR (Handwritten)",
   trocr_handwriting: "TrOCR (Microsoft Handwriting AI)",
+  error: "Error",
 };
 
 export function getModeLabel(mode: string): string {

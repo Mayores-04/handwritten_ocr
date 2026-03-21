@@ -1,8 +1,24 @@
 import { Lightbulb, Type, PenTool, Image as ImageIcon } from "lucide-react";
 
 const tips = [
-  { icon: Type, text: <><strong>Printed mode:</strong> Best for typed documents, books, and signage</> },
-  { icon: PenTool, text: <><strong>Handwritten mode:</strong> Optimized for handwritten notes and letters</> },
+  {
+    icon: Type,
+    text: (
+      <>
+        <strong>Printed mode:</strong> Best for typed documents, books, and
+        signage
+      </>
+    ),
+  },
+  {
+    icon: PenTool,
+    text: (
+      <>
+        <strong>Handwritten mode:</strong> Optimized for handwritten notes and
+        letters
+      </>
+    ),
+  },
   { icon: ImageIcon, text: "Use clear, well-lit photos with minimal blur" },
 ];
 

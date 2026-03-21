@@ -34,13 +34,17 @@ export function ImageUploader({ preview, onFileSelect }: ImageUploaderProps) {
         onClick={() => fileInputRef.current?.click()}
         className={cn(
           "border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all",
-          preview 
-            ? "border-emerald-500/50 bg-emerald-500/5" 
-            : "border-slate-600 hover:border-slate-500 hover:bg-slate-700/30"
+          preview
+            ? "border-emerald-500/50 bg-emerald-500/5"
+            : "border-slate-600 hover:border-slate-500 hover:bg-slate-700/30",
         )}
       >
         {preview ? (
-          <img src={preview} alt="Preview" className="max-h-40 mx-auto rounded-lg" />
+          <img
+            src={preview}
+            alt="Preview"
+            className="max-h-40 mx-auto rounded-lg"
+          />
         ) : (
           <div className="text-slate-400">
             <ImageIcon className="w-10 h-10 mx-auto mb-3 opacity-50" />

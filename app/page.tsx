@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileText, Search, Trash2, AlertCircle, Copy, Check } from "lucide-react";
+import {
+  Upload,
+  FileText,
+  Search,
+  Trash2,
+  AlertCircle,
+  Copy,
+  Check,
+} from "lucide-react";
 import { OcrMode, DisplayFormat } from "@/types";
 import { extractText } from "@/services/ocr";
 import { formatTextForCopy } from "@/lib/utils";
@@ -63,14 +71,18 @@ export default function Home() {
         setError("OCR processing failed");
       }
     } catch (err) {
-      setError(`Error: ${err instanceof Error ? err.message : "Failed to connect to OCR server."}`);
+      setError(
+        `Error: ${err instanceof Error ? err.message : "Failed to connect to OCR server."}`,
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(formatTextForCopy(result, lines, displayFormat));
+    navigator.clipboard.writeText(
+      formatTextForCopy(result, lines, displayFormat),
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -112,13 +124,19 @@ export default function Home() {
             <ModeSelector mode={ocrMode} onChange={setOcrMode} />
 
             <div className="mt-4 flex gap-2">
-              <Button 
-                onClick={handleSubmit} 
-                disabled={!file} 
+              <Button
+                onClick={handleSubmit}
+                disabled={!file}
                 loading={loading}
                 className="flex-1"
               >
-                {loading ? "Processing..." : <><Search className="w-4 h-4" /> Extract Text</>}
+                {loading ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" /> Extract Text
+                  </>
+                )}
               </Button>
               {file && (
                 <Button variant="secondary" onClick={handleClear}>
@@ -134,7 +152,12 @@ export default function Home() {
               </div>
             )}
 
-            <StatsPanel confidence={confidence} modeUsed={modeUsed} lines={lines} result={result} />
+            <StatsPanel
+              confidence={confidence}
+              modeUsed={modeUsed}
+              lines={lines}
+              result={result}
+            />
           </Card>
 
           {/* Result Section */}
@@ -146,13 +169,20 @@ export default function Home() {
               </CardTitle>
               {result && (
                 <Button variant="secondary" size="sm" onClick={handleCopy}>
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copied ? (
+                    <Check className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                   {copied ? "Copied!" : "Copy"}
                 </Button>
               )}
             </div>
 
-            <DisplayFormatSelector format={displayFormat} onChange={setDisplayFormat} />
+            <DisplayFormatSelector
+              format={displayFormat}
+              onChange={setDisplayFormat}
+            />
 
             <OutputContainer result={result}>
               <OutputDisplay

@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# Dependencies (will be installed in container)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build artifacts
+.next
+out
+build
+dist
+
+# IDE & Editor
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Testing
+coverage
+.pytest_cache
+test-results
+
+# Development
+.turbo
+.cache
+
+# Documentation
+docs
+README.md
+*.md
+
+# Optional: Docker files
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+Dockerfile.dev
+
+# Vercel
+.vercel

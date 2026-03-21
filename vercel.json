@@ -1,0 +1,20 @@
+{
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_OCR_API_URL": "@ocr_api_url"
+  },
+  "envs": {
+    "preview": {
+      "NEXT_PUBLIC_OCR_API_URL": "@ocr_api_url_preview"
+    }
+  },
+  "regions": ["iad1"],
+  "functions": {
+    "api/**": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
+}
