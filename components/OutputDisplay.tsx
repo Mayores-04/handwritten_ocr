@@ -78,6 +78,17 @@ export function OutputDisplay({
     );
   }
 
+  if (format === "plain") {
+    const plainText = editableLines.join(" ");
+    return (
+      <textarea
+        value={plainText}
+        onChange={(e) => onResultChange(e.target.value)}
+        className="w-full min-h-[340px] bg-transparent text-slate-100 leading-relaxed outline-none resize-y"
+      />
+    );
+  }
+
   return (
     <textarea
       value={result}

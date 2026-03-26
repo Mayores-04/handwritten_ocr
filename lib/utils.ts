@@ -17,19 +17,22 @@ export function getModeLabel(mode: string): string {
 }
 
 export function formatTextForCopy(
-  result: string, 
-  lines: string[], 
-  format: DisplayFormat
+  result: string,
+  lines: string[],
+  format: DisplayFormat,
 ): string {
   if (format === "numbered" && lines.length > 0) {
-    return lines.map((line, i) => `${i + 1}. ${line}`).join('\n');
+    return lines.map((line, i) => `${i + 1}. ${line}`).join("\n");
   }
   if (format === "lines" && lines.length > 0) {
-    return lines.join('\n');
+    return lines.join("\n");
+  }
+  if (format === "plain" && lines.length > 0) {
+    return lines.join(" ");
   }
   return result;
 }
 
 export function cn(...classes: (string | boolean | undefined)[]): string {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
