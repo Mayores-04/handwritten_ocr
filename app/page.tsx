@@ -37,7 +37,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [ocrMode, setOcrMode] = useState<OcrMode>("printed");
-  const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("numbered");
+  const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("plain");
   const [confidence, setConfidence] = useState(0);
   const [modeUsed, setModeUsed] = useState("");
   const [copied, setCopied] = useState(false);
