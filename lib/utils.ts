@@ -25,10 +25,10 @@ export function formatTextForCopy(
     return lines.map((line, i) => `${i + 1}. ${line}`).join("\n");
   }
   if (format === "lines" && lines.length > 0) {
-    return lines.join("\n");
+    return lines.map((line) => `| ${line}`).join("\n");
   }
   if (format === "plain" && lines.length > 0) {
-    return lines.join(" ");
+    return lines.join("\n");
   }
   return result;
 }

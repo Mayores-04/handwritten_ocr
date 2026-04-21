@@ -18,18 +18,18 @@ export function StatsPanel({
   if (!result) return null;
 
   const stats = [
-    {
-      label: "Confidence",
-      value: `${(confidence * 100).toFixed(1)}%`,
-      className: cn(
-        "font-medium",
-        confidence > 0.7
-          ? "text-emerald-400"
-          : confidence > 0.4
-            ? "text-yellow-400"
-            : "text-red-400",
-      ),
-    },
+    // {
+    //   label: "Confidence",
+    //   value: `${(confidence * 100).toFixed(1)}%`,
+    //   className: cn(
+    //     "font-medium",
+    //     confidence > 0.7
+    //       ? "text-emerald-400"
+    //       : confidence > 0.4
+    //         ? "text-yellow-400"
+    //         : "text-red-400",
+    //   ),
+    // },
     {
       label: "Model",
       value: getModeLabel(modeUsed),

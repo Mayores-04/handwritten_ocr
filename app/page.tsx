@@ -64,7 +64,16 @@ export default function Home() {
       const data = await extractText(file, ocrMode);
       if (data.success) {
         setResult(data.text);
-        setLines(data.lines || []);
+
+        // Normalize lines: printed OCR usually returns `data.lines` as an array.
+        // Handwritten OCR can sometimes return a single long string — try to
+        // derive reasonable visual lines from the `text` if `lines` is empty.
+        const hasLines = Array.isArray(data.lines) && data.lines.length > 0;
+        const derivedLines: string[] = hasLines
+          ? (data.lines as string[])
+          : deriveLinesFromText(data.text || "");
+
+        setLines(derivedLines);
         setConfidence(data.confidence);
         setModeUsed(data.mode_used);
       } else {
@@ -78,6 +87,26 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  function deriveLinesFromText(text: string): string[] {
+    if (!text) return [];
+
+    // Prefer explicit newlines first
+    const nlSplit = text
+      .split(/\r?\n/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (nlSplit.length > 1) return nlSplit;
+
+    // Fallback: split on semicolons and closing braces commonly found in code
+    const semiSplit = text
+      .split(/;|\}|\{/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => (/[;{}]$/.test(s) ? s : s + ";"));
+
+    return semiSplit.length > 1 ? semiSplit : [text.trim()];
+  }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
