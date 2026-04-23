@@ -32,24 +32,16 @@ export function ImageUploader({ preview, onFileSelect }: ImageUploaderProps) {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => fileInputRef.current?.click()}
-        className={cn(
-          "border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all",
-          preview
-            ? "border-emerald-500/50 bg-emerald-500/5"
-            : "border-slate-600 hover:border-slate-500 hover:bg-slate-700/30",
-        )}
+        className={cn("rounded-xl p-6 text-center cursor-pointer transition-all")}
+        style={{ background: "var(--surface)", boxShadow: "var(--card-shadow)", borderTop: "1px solid var(--stroke)" }}
       >
         {preview ? (
-          <img
-            src={preview}
-            alt="Preview"
-            className="max-h-40 mx-auto rounded-lg"
-          />
+          <img src={preview} alt="Preview" className="max-h-40 mx-auto rounded-lg" />
         ) : (
-          <div className="text-slate-400">
-            <ImageIcon className="w-10 h-10 mx-auto mb-3 opacity-50" />
-            <p className="text-sm">Drag & drop an image here</p>
-            <p className="text-xs text-slate-500 mt-1">or click to browse</p>
+          <div className="muted">
+            <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-80" />
+            <p className="text-lg">Drop an image here</p>
+            <p className="text-sm muted mt-1">or click to choose a photo</p>
           </div>
         )}
       </div>

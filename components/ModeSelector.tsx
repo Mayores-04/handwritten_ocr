@@ -17,7 +17,7 @@ const modes: { value: OcrMode; label: string; icon: LucideIcon }[] = [
 export function ModeSelector({ mode, onChange }: ModeSelectorProps) {
   return (
     <div className="mt-4">
-      <label className="text-slate-300 text-sm block mb-2">
+      <label className="text-sm block mb-2" style={{ color: "var(--muted)" }}>
         Recognition Mode:
       </label>
       <div className="flex gap-2">
@@ -27,10 +27,16 @@ export function ModeSelector({ mode, onChange }: ModeSelectorProps) {
             onClick={() => onChange(value)}
             className={cn(
               "flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1",
-              mode === value
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-700 text-slate-300 hover:bg-slate-600",
             )}
+            style={
+              mode === value
+                ? { background: "var(--brand-500)", color: "#fff" }
+                : {
+                    background: "transparent",
+                    color: "var(--foreground)",
+                    border: "1px solid var(--muted)",
+                  }
+            }
           >
             <Icon className="w-3 h-3" /> {label}
           </button>

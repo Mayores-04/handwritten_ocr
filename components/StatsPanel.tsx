@@ -45,11 +45,18 @@ export function StatsPanel({
   ];
 
   return (
-    <div className="mt-4 p-3 bg-slate-900/50 rounded-xl space-y-2 text-sm">
+    <div
+      className="mt-4 p-3 rounded-xl space-y-2 text-sm"
+      style={{
+        background: "var(--surface)",
+        border: "1px solid var(--muted)",
+        color: "var(--foreground)",
+      }}
+    >
       {stats.map(({ label, value, className }) => (
         <div key={label} className="flex justify-between">
-          <span className="text-slate-500">{label}:</span>
-          <span className={className}>{value}</span>
+          <span style={{ color: "var(--muted)" }}>{label}:</span>
+          <span style={{ color: "var(--foreground)" }}>{value}</span>
         </div>
       ))}
     </div>

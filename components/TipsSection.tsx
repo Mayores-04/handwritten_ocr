@@ -24,16 +24,26 @@ const tips = [
 
 export function TipsSection() {
   return (
-    <div className="mt-8 bg-slate-800/30 rounded-2xl p-5 border border-slate-700/50">
-      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+    <div
+      className="mt-8 rounded-2xl p-5"
+      style={{
+        background: "var(--surface)",
+        border: "1px solid var(--muted)",
+        color: "var(--foreground)",
+      }}
+    >
+      <h3
+        className="text-lg font-semibold mb-3 flex items-center gap-2"
+        style={{ color: "var(--foreground)" }}
+      >
         <Lightbulb className="w-5 h-5 text-yellow-500" />
         Tips for best results
       </h3>
-      <ul className="text-slate-400 space-y-2 text-sm grid md:grid-cols-2 gap-x-8">
+      <ul className="space-y-2 text-sm grid md:grid-cols-2 gap-x-8">
         {tips.map(({ icon: Icon, text }, i) => (
           <li key={i} className="flex items-start gap-2">
             <Icon className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-            <span>{text}</span>
+            <span style={{ color: "var(--muted)" }}>{text}</span>
           </li>
         ))}
       </ul>

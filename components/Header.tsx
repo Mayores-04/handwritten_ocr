@@ -1,25 +1,44 @@
-import { Brain, Sparkles } from "lucide-react";
+"use client";
+
+import { useContext } from "react";
+import { Sparkles } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
+import { ThemeContext } from "./ThemeProvider";
 
 export function Header() {
-  return (
-    <div className="text-center mb-8">
-      <div className="flex items-center justify-center gap-3 mb-3">
-        <Brain className="w-10 h-10 text-emerald-500" />
-        <h1 className="text-4xl font-bold text-white">OCR Extractor</h1>
-      </div>
-      <p className="text-slate-400 text-lg flex items-center justify-center gap-2">
-        <Sparkles className="w-5 h-5" />
-        Image to Text using Deep Learning - Supports Printed & Handwritten Text
-      </p>
-    </div>
-  );
-}
+  const { theme } = useContext(ThemeContext) as any;
 
-export function Footer() {
+  const lightSrc = "/lightmodelogowithtext.jpg";
+  const darkSrc = "/darkmodelogowithtext.jpg";
+
   return (
-    <div className="mt-8 text-center text-slate-500 text-sm flex items-center justify-center gap-2">
-      <Brain className="w-4 h-4" />
-      Powered by EasyOCR + Keras + OpenCV + Flask + Text Correction
-    </div>
+    <header className="relative text-center mb-6">
+      <div className="absolute right-0 top-0 mt-1 mr-1">
+        <ThemeToggle />
+      </div>
+      <div className="flex items-center w-full justify-center">
+        <div className="flex items-center justify-center gap-4 mb-3">
+          {theme === "dark" ? (
+            <img src={darkSrc} alt="SnapText" className="app-logo" />
+          ) : (
+            <img src={lightSrc} alt="SnapText" className="app-logo" />
+          )}
+        </div>
+
+        <h1
+          className="text-4xl font-bold text-center mb-2"
+          style={{ color: "var(--brand-500)" }}
+        >
+          SnapText
+        </h1>
+      </div>
+      <p
+        className="text-lg mt-2 flex items-center justify-center gap-2"
+        style={{ color: "var(--muted)" }}
+      >
+        <Sparkles className="w-5 h-5" />
+        Snap a photo. Get editable text. Copy & go!
+      </p>
+    </header>
   );
 }

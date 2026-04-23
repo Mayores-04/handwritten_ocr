@@ -24,13 +24,12 @@ export function Button({
   const baseStyles =
     "rounded-xl font-medium transition-all flex items-center justify-center gap-2";
 
-  const variants = {
-    primary:
-      disabled || loading
-        ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-        : "bg-emerald-600 hover:bg-emerald-500 text-white",
-    secondary: "bg-slate-700 hover:bg-slate-600 text-slate-300",
-    ghost: "bg-transparent hover:bg-slate-700 text-slate-300",
+  const variantStyles: Record<string, React.CSSProperties> = {
+    primary: disabled || loading
+      ? { background: "var(--muted)", color: "var(--foreground)", opacity: 0.8 }
+      : { background: "var(--brand-500)", color: "#ffffff" },
+    secondary: { background: "transparent", color: "var(--foreground)", border: "1px solid var(--muted)" },
+    ghost: { background: "transparent", color: "var(--foreground)" },
   };
 
   const sizes = {
@@ -43,7 +42,8 @@ export function Button({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={cn(baseStyles, variants[variant], sizes[size], className)}
+      className={cn(baseStyles, sizes[size], className)}
+      style={variantStyles[variant]}
     >
       {loading && <Loader2 className="w-4 h-4 animate-spin" />}
       {children}

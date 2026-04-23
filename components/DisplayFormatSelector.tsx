@@ -27,10 +27,16 @@ export function DisplayFormatSelector({
           onClick={() => onChange(value)}
           className={cn(
             "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2",
-            format === value
-              ? "bg-blue-600 text-white"
-              : "bg-slate-700 text-slate-300 hover:bg-slate-600",
           )}
+          style={
+            format === value
+              ? { background: "var(--brand-400)", color: "#fff" }
+              : {
+                  background: "transparent",
+                  color: "var(--foreground)",
+                  border: "1px solid var(--muted)",
+                }
+          }
         >
           <Icon className="w-4 h-4" /> {label}
         </button>

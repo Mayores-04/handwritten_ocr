@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Upload,
-  FileText,
-  Search,
-  Trash2,
-  AlertCircle,
-  Copy,
-  Check,
-} from "lucide-react";
+import { Upload, Search, Trash2, AlertCircle } from "lucide-react";
 import { OcrMode, DisplayFormat } from "@/types";
 import { extractText } from "@/services/ocr";
 import { formatTextForCopy } from "@/lib/utils";
@@ -19,12 +11,10 @@ import {
   CardTitle,
   ImageUploader,
   ModeSelector,
-  DisplayFormatSelector,
   OutputDisplay,
   OutputContainer,
   StatsPanel,
   TipsSection,
-  TechStack,
   Header,
   Footer,
 } from "@/components";
@@ -36,22 +26,26 @@ export default function Home() {
   const [lines, setLines] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
   const [ocrMode, setOcrMode] = useState<OcrMode>("printed");
   const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("plain");
   const [confidence, setConfidence] = useState(0);
   const [modeUsed, setModeUsed] = useState("");
-  const [copied, setCopied] = useState(false);
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
     setResult("");
+    setLines([]);
     setError("");
+    setConfidence(0);
+    setModeUsed("");
   };
 
   const handleSubmit = async () => {
     if (!file) {
-      setError("Please select an image file");
+      setError("Please select an image file.");
       return;
     }
 
@@ -62,58 +56,56 @@ export default function Home() {
 
     try {
       const data = await extractText(file, ocrMode);
+
       if (data.success) {
         setResult(data.text);
-
-        // Normalize lines: printed OCR usually returns `data.lines` as an array.
-        // Handwritten OCR can sometimes return a single long string — try to
-        // derive reasonable visual lines from the `text` if `lines` is empty.
-        const hasLines = Array.isArray(data.lines) && data.lines.length > 0;
-        const derivedLines: string[] = hasLines
-          ? (data.lines as string[])
-          : deriveLinesFromText(data.text || "");
-
-        setLines(derivedLines);
+        setLines(data.lines || []);
         setConfidence(data.confidence);
         setModeUsed(data.mode_used);
       } else {
-        setError("OCR processing failed");
+        setError("OCR processing failed.");
       }
     } catch (err) {
       setError(
-        `Error: ${err instanceof Error ? err.message : "Failed to connect to OCR server."}`,
+        `Error: ${
+          err instanceof Error
+            ? err.message
+            : "Failed to connect to OCR server."
+        }`,
       );
     } finally {
       setLoading(false);
     }
   };
 
-  function deriveLinesFromText(text: string): string[] {
-    if (!text) return [];
+  const handleCopy = async () => {
+    const text = formatTextForCopy(result, lines, displayFormat);
 
-    // Prefer explicit newlines first
-    const nlSplit = text
-      .split(/\r?\n/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    if (nlSplit.length > 1) return nlSplit;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError("Failed to copy text.");
+    }
+  };
 
-    // Fallback: split on semicolons and closing braces commonly found in code
-    const semiSplit = text
-      .split(/;|\}|\{/)
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((s) => (/[;{}]$/.test(s) ? s : s + ";"));
+  const handleDownload = () => {
+    if (!result) return;
 
-    return semiSplit.length > 1 ? semiSplit : [text.trim()];
-  }
+    const text = formatTextForCopy(result, lines, displayFormat);
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(
-      formatTextForCopy(result, lines, displayFormat),
-    );
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "snaptext-output.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 2000);
   };
 
   const handleClear = () => {
@@ -137,39 +129,64 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <Header />
+    <div className="min-h-screen flex max-w-7xl flex-col w-full">
+      <Header />
 
-        <div className="grid gap-6 lg:grid-cols-5">
-          {/* Upload Section */}
-          <Card className="lg:col-span-2">
+      <div className="fixed top-4 right-4 z-50 flex flex-col items-end gap-2">
+        {copied && (
+          <div
+            className="px-3 py-2 rounded-md text-sm"
+            style={{ background: "var(--brand-500)", color: "#fff" }}
+          >
+            Copied to clipboard
+          </div>
+        )}
+        {downloaded && (
+          <div
+            className="px-3 py-2 rounded-md text-sm"
+            style={{ background: "var(--brand-500)", color: "#fff" }}
+          >
+            Download started
+          </div>
+        )}
+      </div>
+
+      <div>
+        <div className="grid gap-6 lg:grid-cols-5 items-stretch">
+          <Card className="lg:col-span-2 h-full">
             <CardTitle>
               <Upload className="w-5 h-5 text-emerald-500" />
-              Upload Image
+              Upload Your Picture
             </CardTitle>
 
             <ImageUploader preview={preview} onFileSelect={handleFileSelect} />
             <ModeSelector mode={ocrMode} onChange={setOcrMode} />
 
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-col gap-3">
               <Button
                 onClick={handleSubmit}
                 disabled={!file}
                 loading={loading}
-                className="flex-1"
+                className="w-full"
               >
                 {loading ? (
                   "Processing..."
                 ) : (
                   <>
-                    <Search className="w-4 h-4" /> Extract Text
+                    <Search className="w-4 h-4" />
+                    Extract Text
                   </>
                 )}
               </Button>
+
               {file && (
-                <Button variant="secondary" onClick={handleClear}>
+                <Button
+                  variant="secondary"
+                  onClick={handleClear}
+                  className="w-full"
+                >
                   <Trash2 className="w-4 h-4" />
+                  Clear
                 </Button>
               )}
             </div>
@@ -189,31 +206,14 @@ export default function Home() {
             />
           </Card>
 
-          {/* Result Section */}
-          <Card className="lg:col-span-3 flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <CardTitle>
-                <FileText className="w-5 h-5 text-emerald-500" />
-                Extracted Text
-              </CardTitle>
-              {result && (
-                <Button variant="secondary" size="sm" onClick={handleCopy}>
-                  {copied ? (
-                    <Check className="w-4 h-4 text-emerald-400" />
-                  ) : (
-                    <Copy className="w-4 h-4" />
-                  )}
-                  {copied ? "Copied!" : "Copy"}
-                </Button>
-              )}
-            </div>
-
-            <DisplayFormatSelector
+          <Card className="lg:col-span-3 h-full flex flex-col">
+            <OutputContainer
+              result={result}
               format={displayFormat}
-              onChange={setDisplayFormat}
-            />
-
-            <OutputContainer result={result}>
+              onFormatChange={setDisplayFormat}
+              onCopy={handleCopy}
+              onDownload={handleDownload}
+            >
               <OutputDisplay
                 result={result}
                 lines={lines}
@@ -226,7 +226,6 @@ export default function Home() {
         </div>
 
         <TipsSection />
-        <TechStack />
         <Footer />
       </div>
     </div>
