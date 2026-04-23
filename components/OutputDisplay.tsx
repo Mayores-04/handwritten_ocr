@@ -51,10 +51,7 @@ export function OutputDisplay({
 
   if (format === "numbered" && editableLines.length > 0) {
     return (
-      <div
-        className="h-full min-h-0 overflow-y-auto overflow-x-hidden pr-1"
-        style={{ maxHeight: "480px" }}
-      >
+      <div className="h-full min-h-0 overflow-y-auto overflow-x-hidden pr-1">
         <div className="space-y-1">
           {editableLines.map((line, index) => (
             <div key={index} className="flex gap-3 rounded px-1 py-0.5">
@@ -75,10 +72,7 @@ export function OutputDisplay({
 
   if (format === "lines" && editableLines.length > 0) {
     return (
-      <div
-        className="h-full min-h-0 overflow-y-auto overflow-x-hidden pr-1"
-        style={{ maxHeight: "480px" }}
-      >
+      <div className="h-full min-h-0 overflow-y-auto overflow-x-hidden pr-1">
         <div className="space-y-1">
           {editableLines.map((line, index) => (
             <div
@@ -103,7 +97,6 @@ export function OutputDisplay({
       value={formatText(editableLines, format)}
       onChange={(e) => onResultChange(e.target.value)}
       className="w-full h-full min-h-0 bg-transparent outline-none resize-none overflow-y-auto overflow-x-hidden font-mono text-sm text-foreground leading-relaxed"
-      style={{ maxHeight: "480px" }}
     />
   );
 }

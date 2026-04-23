@@ -19,6 +19,7 @@ interface OutputContainerProps {
   onCopy: () => void;
   onDownload: () => void;
   children: React.ReactNode;
+  maxContentHeight?: number;
 }
 
 export function OutputContainer({
@@ -28,6 +29,7 @@ export function OutputContainer({
   onCopy,
   onDownload,
   children,
+  maxContentHeight,
 }: OutputContainerProps) {
   const tabs: { label: string; value: DisplayFormat; icon: React.ReactNode }[] =
     [
@@ -42,7 +44,6 @@ export function OutputContainer({
         <FileText size={18} className="opacity-70" />
         Your Text Appears Here
       </div>
-
       <div className="flex gap-2 shrink-0">
         {tabs.map((tab) => (
           <button
@@ -73,7 +74,10 @@ export function OutputContainer({
 
       <div
         className="rounded-xl bg-[var(--background)] p-4 flex-1 min-h-0 overflow-hidden"
-        style={{ boxShadow: "var(--card-shadow)" }}
+        style={{
+          boxShadow: "var(--card-shadow)",
+          maxHeight: maxContentHeight ? `${maxContentHeight}px` : undefined,
+        }}
       >
         {children}
       </div>

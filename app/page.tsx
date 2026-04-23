@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, Search, Trash2, AlertCircle } from "lucide-react";
 import { OcrMode, DisplayFormat } from "@/types";
 import { extractText } from "@/services/ocr";
@@ -32,6 +32,10 @@ export default function Home() {
   const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("plain");
   const [confidence, setConfidence] = useState(0);
   const [modeUsed, setModeUsed] = useState("");
+  const [leftCardHeight, setLeftCardHeight] = useState<number | undefined>(
+    undefined,
+  );
+  const leftCardRef = useRef<HTMLDivElement | null>(null);
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
@@ -118,6 +122,17 @@ export default function Home() {
     setModeUsed("");
   };
 
+  useEffect(() => {
+    function updateHeight() {
+      const h = leftCardRef.current?.getBoundingClientRect().height;
+      setLeftCardHeight(h ? Math.floor(h) : undefined);
+    }
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [preview, file, result, lines, confidence, modeUsed]);
+
   const handleResultChange = (value: string) => {
     setResult(value);
     setLines(value ? value.split(/\r?\n/) : []);
@@ -153,58 +168,63 @@ export default function Home() {
 
       <div>
         <div className="grid gap-6 lg:grid-cols-5 items-stretch">
-          <Card className="lg:col-span-2 h-full">
-            <CardTitle>
-              <Upload className="w-5 h-5 text-emerald-500" />
-              Upload Your Picture
-            </CardTitle>
+          <div ref={leftCardRef} className="lg:col-span-2 h-full">
+            <Card className="h-full">
+              <CardTitle>
+                <Upload className="w-5 h-5 text-emerald-500" />
+                Upload Your Picture
+              </CardTitle>
 
-            <ImageUploader preview={preview} onFileSelect={handleFileSelect} />
-            <ModeSelector mode={ocrMode} onChange={setOcrMode} />
+              <ImageUploader
+                preview={preview}
+                onFileSelect={handleFileSelect}
+              />
+              <ModeSelector mode={ocrMode} onChange={setOcrMode} />
 
-            <div className="mt-4 flex flex-col gap-3">
-              <Button
-                onClick={handleSubmit}
-                disabled={!file}
-                loading={loading}
-                className="w-full"
-              >
-                {loading ? (
-                  "Processing..."
-                ) : (
-                  <>
-                    <Search className="w-4 h-4" />
-                    Extract Text
-                  </>
-                )}
-              </Button>
-
-              {file && (
+              <div className="mt-4 flex flex-col gap-3">
                 <Button
-                  variant="secondary"
-                  onClick={handleClear}
+                  onClick={handleSubmit}
+                  disabled={!file}
+                  loading={loading}
                   className="w-full"
                 >
-                  <Trash2 className="w-4 h-4" />
-                  Clear
+                  {loading ? (
+                    "Processing..."
+                  ) : (
+                    <>
+                      <Search className="w-4 h-4" />
+                      Extract Text
+                    </>
+                  )}
                 </Button>
-              )}
-            </div>
 
-            {error && (
-              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                <span>{error}</span>
+                {file && (
+                  <Button
+                    variant="secondary"
+                    onClick={handleClear}
+                    className="w-full"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Clear
+                  </Button>
+                )}
               </div>
-            )}
 
-            <StatsPanel
-              confidence={confidence}
-              modeUsed={modeUsed}
-              lines={lines}
-              result={result}
-            />
-          </Card>
+              {error && (
+                <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <StatsPanel
+                confidence={confidence}
+                modeUsed={modeUsed}
+                lines={lines}
+                result={result}
+              />
+            </Card>
+          </div>
 
           <Card className="lg:col-span-3 h-full flex flex-col">
             <OutputContainer
@@ -213,6 +233,7 @@ export default function Home() {
               onFormatChange={setDisplayFormat}
               onCopy={handleCopy}
               onDownload={handleDownload}
+              maxContentHeight={leftCardHeight}
             >
               <OutputDisplay
                 result={result}

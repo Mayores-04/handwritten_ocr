@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="site-footer mt-8">
       <div className="container-footer">
         <div className="footer-left">
-          © 2024 SnapText. Made simple for everyone.
+          © 2026 SnapText. Made simple for everyone.
         </div>
         <div className="footer-right">
           <div className="powered-label">Powered by :</div>
